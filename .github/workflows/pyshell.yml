@@ -35,15 +35,11 @@ jobs:
             cd python
             cp *.so `python -m site --user-site`
 
-        - name: Print cwd
-          run: echo $PWD
-
-        # - name: Install requirements
-        #   run: |
-        #     cd ../../.. 
-        #     pip install -r requirements.txt
-        #     pip install .
+        - name: Install requirements
+          run: |
+            pip install -r requirements.txt
+            pip install .
         
-        # - name: Run tests
-        #   run: pytest .
+        - name: Run tests
+          run: pytest .
 
