@@ -37,7 +37,7 @@ jobs:
 
         - name: Install requirements
           run: |
-            cd ../..
+            cd ../../.. 
             pip install -r requirements.txt
             pip install .
         
