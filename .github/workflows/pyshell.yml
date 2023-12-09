@@ -24,3 +24,19 @@ jobs:
         - name: Setup cmake
           uses: jwlawson/actions-setup-cmake@v1.14
 
+        - name: Install pyshell
+          run: |
+            git clone https://gitlab.com/numod/shell-energy.git
+            cd shell-energy
+            mkdir build
+            cd build
+            cmake -DBUILD_PYTHON=ON ..
+            cmake --build . --config Release
+            cd build/python
+            cp *.so `python -m site --user-site`
+
+        - name: Test pyshell
+          run: |
+            cd ../..
+            python -c "import pyshell"
+
