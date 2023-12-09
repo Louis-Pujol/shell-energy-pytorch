@@ -35,8 +35,12 @@ jobs:
             cd python
             cp *.so `python -m site --user-site`
 
-        - name: Test pyshell
+        - name: Install requirements
           run: |
             cd ../..
-            python -c "import pyshell"
+            pip install -r requirements.txt
+            pip install .
+        
+        - name: Run tests
+          run: pytest .
 
