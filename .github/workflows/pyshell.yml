@@ -32,7 +32,7 @@ jobs:
             cd build
             cmake -DBUILD_PYTHON=ON ..
             cmake --build . --config Release
-            cd build/python
+            cd python
             cp *.so `python -m site --user-site`
 
         - name: Test pyshell
