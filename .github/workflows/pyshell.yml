@@ -19,7 +19,7 @@ jobs:
           uses: egor-tensin/build-boost@v1
           with:
             version: '1.77.0'
-            librairies: filesystem program_options system
+            libraries: filesystem program_options system
 
         - name: Setup cmake
           uses: jwlawson/actions-setup-cmake@v1.14
