@@ -1,4 +1,5 @@
 import torch
+import igl
 import numpy as np
 
 
@@ -9,12 +10,31 @@ def bending_energy(
 ):
     """Compute the bending energy of the mesh.
 
-    Page 4 in :
+    The mathematical formulation is given in page 4 of:
     https://ddg.math.uni-goettingen.de/pub/HeRuSc14.pdf
 
-    cpp implementation:
+    The implementation provided here is a pytorch version of the cpp
+    implementation available at:
     https://gitlab.com/numod/shell-energy/-/blob/main/src/bending_energy.cpp
 
+    Parameters
+    ----------
+    points_undef : torch.Tensor
+        The undeformed points of the mesh. Shape: (n_points, 3) for a single
+        mesh and (n_points, n_meshes, 3) for a batch of meshes in dense
+        correspondance.
+
+    points_def : torch.Tensor
+        The deformed points of the mesh. Shape: (n_points, 3) for a single
+        mesh and (n_points, n_meshes, 3) for a batch of meshes in dense
+        correspondance.
+
+    triangles : torch.Tensor
+        The triangles of the mesh(es). Shape: (n_triangles, 3).
+
+    weight : float, optional
+        The weight of the bending energy. Default: 0.001.
+ 
     """
     if (
         points_undef.device != points_def.device
@@ -23,8 +43,6 @@ def bending_energy(
         raise ValueError("All inputs must be on the same device")
 
     device = points_undef.device
-
-    import igl
 
     E, EMAP, EF, EI = igl.edge_flaps(triangles.cpu().numpy())
     E = torch.from_numpy(E).to(device)

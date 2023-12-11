@@ -6,6 +6,37 @@ def membrane_energy(
     points_def: torch.Tensor,
     triangles: torch.Tensor,
 ):
+    """Compute the membrane energy of the mesh.
+
+    The mathematical formulation is given by equation (8) of:
+    https://ddg.math.uni-goettingen.de/pub/HeRuWaWi12_final.pdf
+
+    The implementation provided here is a pytorch version of the cpp
+    implementation available at:
+    https://gitlab.com/numod/shell-energy/-/blob/main/src/membrane_energy.cpp
+
+    Parameters
+    ----------
+    points_undef : torch.Tensor
+        The undeformed points of the mesh. Shape: (n_points, 3) for a single
+        mesh and (n_points, n_meshes, 3) for a batch of meshes in dense
+        correspondance.
+
+    points_def : torch.Tensor
+        The deformed points of the mesh. Shape: (n_points, 3) for a single
+        mesh and (n_points, n_meshes, 3) for a batch of meshes in dense
+        correspondance.
+
+    triangles : torch.Tensor
+        The triangles of the mesh(es). Shape: (n_triangles, 3).
+ 
+    """
+    if (
+        points_undef.device != points_def.device
+        or points_undef.device != triangles.device
+    ):
+        raise ValueError("All inputs must be on the same device")
+
     lambd = 1
     mu = 1
 
@@ -22,8 +53,6 @@ def membrane_energy(
     ek_norm = (ek**2).sum(dim=-1)
 
     areas_def = (torch.cross(ei, ej, dim=-1) ** 2).sum(dim=-1) / 4
-    # replace zeros by inf to avoid division by zero
-    # areas_undef[areas_undef.sqrt() < 1e15] = float("inf")
 
     a = points_undef[triangles[:, 0], :]
     b = points_undef[triangles[:, 1], :]
@@ -34,8 +63,6 @@ def membrane_energy(
     ek = a - b
 
     areas_undef = (torch.cross(ei, ej, dim=-1) ** 2).sum(dim=-1) / 4
-    # replace zeros by inf to avoid division by zero
-    # areas_def[areas_def.sqrt() < 1e15] = float("inf")
 
     trace = (
         ei_norm * (ej * ek).sum(dim=-1)
