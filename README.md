@@ -7,4 +7,4 @@ TODO:
 - [x] Write pytorch code for shell energy
 - [x] Test: do we obtain the same values on examples ?
 - [ ] Test: do we obtain the same gradients with `torch.autograd` ? -> Yes for membrane enery, not for bending energy...
-- [ ] Benchmark : which one is faster ? Does GPU provides an acceleration ? -> Seem to be true for batches 
+- [ ] Benchmark : which one is faster ? Does GPU provides an acceleration ? -> Seems to be true for batches - Pytorch implementation is faster for same topology/multiple poses
