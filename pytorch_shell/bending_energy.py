@@ -34,7 +34,7 @@ def bending_energy(
 
     weight : float, optional
         The weight of the bending energy. Default: 0.001.
- 
+
     """
     if (
         points_undef.device != points_def.device
@@ -73,8 +73,8 @@ def bending_energy(
     Pl = points_undef[pl, :]
     delTheta = delTheta - _dihedral_angle(Pi, Pj, Pk, Pl)
 
-    vol = (torch.cross(Pk - Pj, Pi - Pk)).norm(dim=-1) / 2 + (
-        torch.cross(Pl - Pi, Pj - Pl)
+    vol = (torch.linalg.cross(Pk - Pj, Pi - Pk)).norm(dim=-1) / 2 + (
+        torch.linalg.cross(Pl - Pi, Pj - Pl)
     ).norm(dim=-1) / 2
 
     elengthSqr = ((Pj - Pi) ** 2).sum(dim=-1)
@@ -86,12 +86,12 @@ def bending_energy(
 
 
 def _dihedral_angle(Pi, Pj, Pk, Pl):
-    nk = torch.cross(Pk - Pj, Pi - Pk, dim=-1)
+    nk = torch.linalg.cross(Pk - Pj, Pi - Pk, dim=-1)
     nk = nk / nk.norm(dim=-1).unsqueeze(-1)
-    nl = torch.cross(Pl - Pi, Pj - Pl, dim=-1)
+    nl = torch.linalg.cross(Pl - Pi, Pj - Pl, dim=-1)
     nl = nl / nl.norm(dim=-1).unsqueeze(-1)
 
-    cross_prod = torch.cross(nk, nl, dim=-1)
+    cross_prod = torch.linalg.cross(nk, nl, dim=-1)
     edge_dir = Pj - Pi
     edge_dir = edge_dir / edge_dir.norm(dim=-1).unsqueeze(-1)
 

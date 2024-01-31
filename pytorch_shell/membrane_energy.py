@@ -52,7 +52,7 @@ def membrane_energy(
     ej_norm = (ej**2).sum(dim=-1)
     ek_norm = (ek**2).sum(dim=-1)
 
-    areas_def = (torch.cross(ei, ej, dim=-1) ** 2).sum(dim=-1) / 4
+    areas_def = (torch.linalg.cross(ei, ej, dim=-1) ** 2).sum(dim=-1) / 4
 
     a = points_undef[triangles[:, 0], :]
     b = points_undef[triangles[:, 1], :]
@@ -62,7 +62,7 @@ def membrane_energy(
     ej = a - c
     ek = a - b
 
-    areas_undef = (torch.cross(ei, ej, dim=-1) ** 2).sum(dim=-1) / 4
+    areas_undef = (torch.linalg.cross(ei, ej, dim=-1) ** 2).sum(dim=-1) / 4
 
     trace = (
         ei_norm * (ej * ek).sum(dim=-1)
